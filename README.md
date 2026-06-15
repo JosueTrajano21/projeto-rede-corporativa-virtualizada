@@ -1,147 +1,81 @@
-# Rede Corporativa Virtualizada com pfSense e Samba AD DC
+# Projeto de Rede Corporativa com pfSense e Ubuntu Server
 
-Este projeto apresenta a implementação de uma rede corporativa virtualizada utilizando **pfSense**, **Ubuntu Server**, **Samba AD DC** e **Windows Client**.
+## Sobre o projeto
 
-O objetivo foi simular um ambiente empresarial com firewall, proxy, bloqueio de sites, VPN, domínio Active Directory, autenticação centralizada e controle de acesso baseado em grupos.
+Este projeto simula uma infraestrutura de rede corporativa utilizando pfSense como firewall/gateway e Ubuntu Server como servidor interno. O ambiente foi criado em laboratório com foco em serviços de rede, controle de acesso, proxy, VPN e autenticação centralizada.
+
+## Objetivos
+
+- Configurar um firewall corporativo com pfSense;
+- Implementar proxy com Squid;
+- Controlar acesso a sites com SquidGuard;
+- Criar uma autoridade certificadora interna;
+- Configurar acesso remoto via OpenVPN;
+- Configurar Ubuntu Server com DHCP, Apache e Samba AD DC;
+- Simular departamentos com permissões de acesso por grupo.
 
 ## Tecnologias utilizadas
 
-* Oracle VirtualBox
-* pfSense
-* Ubuntu Server
-* Samba 4 Active Directory Domain Controller
-* Windows Client
-* Squid Proxy
-* SquidGuard
-* OpenVPN
-* Apache
-* DHCP
-* DNS interno
+- pfSense
+- Squid Proxy
+- SquidGuard
+- OpenVPN
+- Autoridade Certificadora interna
+- Ubuntu Server
+- DHCP Server
+- Apache
+- Samba AD DC
+- DNS interno
+- VirtualBox
 
 ## Topologia do ambiente
 
-A infraestrutura foi composta por três máquinas virtuais principais:
+![Topologia da rede](images/topologia.png)
 
-| Máquina        | Função                                                      |
-| -------------- | ----------------------------------------------------------- |
-| pfSense        | Firewall, gateway, proxy, filtro de conteúdo e servidor VPN |
-| Ubuntu Server  | Samba AD DC, DNS, DHCP, Apache e compartilhamentos          |
-| Windows Client | Estação de trabalho ingressada no domínio                   |
+## Serviços implementados
 
-Configuração básica da rede:
+### pfSense
 
-```text
-Rede interna: 192.168.1.0/24
-pfSense LAN: 192.168.1.1
-Ubuntu Server: 192.168.1.10
-Domínio: lab.local
-Servidor AD DC: ubuntusrv.lab.local
-```
+- Firewall e gateway da rede;
+- Regras de tráfego;
+- Proxy com Squid;
+- Bloqueio de sites com SquidGuard;
+- Autoridade certificadora;
+- OpenVPN para acesso remoto.
 
-## Funcionalidades implementadas
+### Ubuntu Server
 
-* Configuração do pfSense como firewall e gateway da rede;
-* Regras de NAT e firewall;
-* Bloqueio do protocolo QUIC/HTTP3 na porta UDP 443;
-* Proxy transparente com Squid;
-* Filtro de conteúdo com SquidGuard;
-* Bloqueio de sites e categorias não autorizadas;
-* Página personalizada de bloqueio hospedada no Apache;
-* Envio de alertas por e-mail para tentativas de acesso bloqueado;
-* Lista externa de IPs bloqueados;
-* OpenVPN para acesso remoto seguro;
-* Samba AD DC como controlador de domínio;
-* DNS interno para resolução do domínio `lab.local`;
-* Cliente Windows ingressado no domínio;
-* Compartilhamentos de rede por departamento;
-* Controle de acesso baseado em grupos.
+- Servidor DHCP;
+- Servidor Apache;
+- Samba Active Directory Domain Controller;
+- DNS interno;
+- Compartilhamentos SMB por departamento.
 
-## Samba AD DC e controle de acesso
+## Documentação completa
 
-O Ubuntu Server foi configurado como **Samba Active Directory Domain Controller**, permitindo autenticação centralizada e gerenciamento de usuários e grupos.
+- [Visão geral](docs/01-visao-geral.md)
+- [Topologia](docs/02-topologia.md)
+- [pfSense](docs/03-pfsense.md)
+- [Squid Proxy](docs/04-squid-proxy.md)
+- [SquidGuard](docs/05-squidguard.md)
+- [Autoridade Certificadora](docs/06-autoridade-certificadora.md)
+- [OpenVPN](docs/07-openvpn.md)
+- [Ubuntu Server](docs/08-ubuntu-server.md)
+- [DHCP](docs/09-dhcp.md)
+- [Apache](docs/10-apache.md)
+- [Samba AD DC](docs/11-samba-ad-dc.md)
+- [Testes e validação](docs/12-testes-validacao.md)
 
-Foram criados grupos para representar departamentos da empresa:
+## Resultado
 
-| Grupo | Finalidade                                |
-| ----- | ----------------------------------------- |
-| GG_RH | Acesso ao compartilhamento do setor de RH |
-| GG_TI | Acesso ao compartilhamento do setor de TI |
-
-Também foram criados usuários de teste:
-
-| Usuário   | Grupo |
-| --------- | ----- |
-| ana.rh    | GG_RH |
-| carlos.ti | GG_TI |
-
-## Validações realizadas
-
-| Teste                                               | Resultado     |
-| --------------------------------------------------- | ------------- |
-| Cliente Windows ingressado no domínio               | Funcionou     |
-| Usuário RH acessando pasta RH                       | Permitido     |
-| Usuário RH criando/modificando arquivos na pasta RH | Permitido     |
-| Usuário RH acessando pasta TI                       | Acesso negado |
-| Usuário TI acessando pasta TI                       | Permitido     |
-| Usuário TI criando/modificando arquivos na pasta TI | Permitido     |
-| Usuário TI acessando pasta RH                       | Acesso negado |
-| Acesso a sites permitidos                           | Funcionou     |
-| Bloqueio de redes sociais                           | Funcionou     |
-| Envio de alerta por e-mail                          | Funcionou     |
-| Bloqueio de IPs por lista externa                   | Funcionou     |
-| Conexão via OpenVPN                                 | Funcionou     |
-| Acesso a recursos internos pela VPN                 | Funcionou     |
-
-## Evidências
-
-As evidências do projeto estão disponíveis na pasta `/imagens`.
-
-Exemplos de evidências incluídas:
-
-* Topologia da rede;
-* Dashboard ou regras do pfSense;
-* Cliente Windows ingressado no domínio;
-* Grupos criados no Samba AD DC;
-* Usuário RH acessando a pasta RH;
-* Usuário RH recebendo acesso negado na pasta TI;
-* Usuário TI acessando a pasta TI;
-* Usuário TI recebendo acesso negado na pasta RH;
-* Bloqueio de sites pelo SquidGuard;
-* Conexão OpenVPN estabelecida.
-
-## Estrutura do repositório
-
-```text
-rede-corporativa-pfsense-samba-ad/
-│
-├── README.md
-├── documentacao/
-│   └── artigo-projeto-redes.pdf
-│
-├── imagens/
-│   ├── topologia.png
-│   ├── pfsense-dashboard.png
-│   ├── samba-grupos.png
-│   ├── acesso-rh-permitido.png
-│   ├── acesso-ti-negado.png
-│   ├── acesso-ti-permitido.png
-│   └── acesso-rh-negado.png
-│
-└── configs/
-    ├── smb.conf-exemplo.txt
-    ├── dhcpd.conf-exemplo.txt
-    └── regras-pfsense.md
-```
+Ao final do projeto, foi possível simular uma rede corporativa com controle de tráfego, autenticação centralizada, acesso remoto via VPN, compartilhamento de arquivos por departamento e serviços internos funcionando em ambiente virtualizado.
 
 ## Aprendizados
 
-Este projeto permitiu praticar conceitos importantes de redes, infraestrutura e Segurança da Informação, incluindo:
+Durante o projeto, foram praticados conceitos de redes, firewall, proxy, VPN, DNS, DHCP, Active Directory, permissões de acesso e administração de servidores Linux.
 
-* Firewall e regras de tráfego;
-* Proxy e filtro de conteúdo;
-* VPN para acesso remoto seguro;
-* DNS e DHCP em ambiente corporativo;
-* Active Directory com Samba AD DC;
-* Autenticação centralizada;
-* Controle de acesso baseado em grupos;
-* Documentação técnica de infraestrutura.
+## Autor
+
+Josué Felipe  
+Estudante de Análise e Desenvolvimento de Sistemas  
+Foco em Redes, Infraestrutura e Segurança da Informação
